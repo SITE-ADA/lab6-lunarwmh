@@ -1,21 +1,29 @@
 package az.edu.ada.wm2.lab6.model;
 
+import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
+import java.util.Set;
+import java.util.HashSet;
 
+
+@Entity
+@Table(name = "products")
 public class Product {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
     private String productName;
     private BigDecimal price;
     private LocalDate expirationDate;
 
-    // Constructors
     public Product() {
     }
 
     public Product(String productName, BigDecimal price, LocalDate expirationDate) {
-        this.id = UUID.randomUUID();
         this.productName = productName;
         this.price = price;
         this.expirationDate = expirationDate;
@@ -27,6 +35,13 @@ public class Product {
         this.price = price;
         this.expirationDate = expirationDate;
     }
+    @ManyToMany
+    @JoinTable(
+            name = "product_category",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id")
+    )
+    private Set<Category> categories = new HashSet<>();
 
     // Getters and Setters
     public UUID getId() {
@@ -61,6 +76,13 @@ public class Product {
         this.expirationDate = expirationDate;
     }
 
+    public Set<Category> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(Set<Category> categories) {
+        this.categories = categories;
+    }
     @Override
     public String toString() {
         return "Product{" +
